@@ -166,6 +166,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/soumettre-devoir/{devoirId}', [EtudiantDashboardController::class, 'soumettreDevoir'])->name('etudiant.soumettre-devoir.store');
         Route::get('/notes', [EtudiantDashboardController::class, 'showNotes'])->name('etudiant.notes');Route::get('/devoirs/{id}/rendre', [EtudiantController::class, 'showRendreDevoirForm'])->name('etudiant.rendreDevoir');
         Route::post('/devoirs/{id}/rendre', [EtudiantDashboardController::class, 'submitRendreDevoir'])->name('etudiant.submitRendreDevoir');
+        Route::delete('/etudiant/devoirs/{id}/delete', [EtudiantDashboardController::class, 'deleteSubmission'])->name('etudiant.devoirs.delete');
     });
 
 

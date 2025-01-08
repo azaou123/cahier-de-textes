@@ -13,14 +13,7 @@ class RenduDevoir extends Model
 
     protected $primaryKey = 'ID_Rendu';
 
-    protected $fillable = [
-        'ID_Devoir',
-        'ID_Utilisateur',
-        'Fichier_Rendu',
-        'Date_Rendu',
-        'Note',
-        'Commentaire',
-    ];
+    protected $fillable = ['ID_Devoir', 'ID_Utilisateur', 'Fichier_Rendu', 'Date_Rendu', 'Note', 'Commentaire'];
 
     // Relationships
     public function devoir()

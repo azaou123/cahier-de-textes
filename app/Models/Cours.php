@@ -34,9 +34,10 @@ class Cours extends Model
         return $this->hasMany(Seance::class, 'ID_Cours');
     }
 
+   
     public function devoirs()
     {
-        return $this->hasMany(Devoir::class, 'ID_Cours');
+        return $this->hasMany(Devoir::class, 'ID_Cours'); // Adjust the foreign key if necessary
     }
 
     public function ressources()

@@ -130,12 +130,18 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            @php var_dump($existingSubmission); @endphp
                             @if($existingSubmission)
-                                <!-- If a submission exists, show the "View" button -->
+                                <!-- If a submission exists, show the "View" and "Delete" buttons -->
                                 <a href="{{ asset('storage/' . $existingSubmission->Fichier_Rendu) }}" target="_blank" class="btn btn-info">
-                                    View Submission
+                                    <i class="fas fa-eye"></i> View Submission
                                 </a>
+                                <form id="deleteSubmissionForm" action="{{ route('etudiant.devoirs.delete', $existingSubmission->ID_Rendu) }}" method="POST" class="d-inline">
+                                  @csrf
+                                  @method('DELETE')
+                                  <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this submission?')">
+                                      <i class="fas fa-trash"></i> Delete Submission
+                                  </button>
+                                </form>
                             @else
                                 <!-- If no submission exists, show the form -->
                                 <form id="submitDevoirForm" action="" method="POST" enctype="multipart/form-data">

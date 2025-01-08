@@ -36,20 +36,52 @@ class EtudiantDashboardController extends Controller
         return view('etudiant.homework', compact('devoirs'));
     }
     public function show($id)
-    {
-        $cours = Cours::with('professeur', 'filiere')->findOrFail($id);
-        // Récupérer les ressources du cours
-        $ressources = $cours->ressources()->orderBy('created_at', 'asc')->get();
+{
+    $cours = Cours::with('professeur', 'filiere')->findOrFail($id);
+    $ressources = $cours->ressources()->orderBy('created_at', 'asc')->get();
+    $devoirs = $cours->devoirs()->orderBy('created_at', 'asc')->get();
 
-        // Récupérer les devoirs du cours
-        $devoirs = $cours->devoirs()->orderBy('created_at', 'asc')->get();
+    \Log::info('Devoirs: ' . json_encode($devoirs));
+    \Log::info('User ID: ' . Auth::id());
+
+    $existingSubmission = null;
+    if ($devoirs->isNotEmpty()) {
+        $devoirId = $devoirs->first()->ID_Devoir; // Use ID_Devoir instead of id
         $existingSubmission = RenduDevoir::withTrashed()
-        ->where('ID_Devoir', $id)
-        ->where('ID_Utilisateur', Auth::id())
-        ->first();
+            ->where('ID_Devoir', $devoirId)
+            ->where('ID_Utilisateur', Auth::id())
+            ->first();
 
-        return view('etudiant.coursDetails', compact('cours', 'ressources', 'devoirs', 'existingSubmission'));
+        \Log::info('Query executed: ' . RenduDevoir::withTrashed()
+            ->where('ID_Devoir', $devoirId)
+            ->where('ID_Utilisateur', Auth::id())
+            ->toSql());
     }
+
+    \Log::info('Existing Submission: ' . json_encode($existingSubmission));
+
+    return view('etudiant.coursDetails', compact('cours', 'ressources', 'devoirs', 'existingSubmission'));
+}
+
+public function deleteSubmission($id)
+{
+    $submission = RenduDevoir::findOrFail($id);
+
+    // Optional: Check if the authenticated user owns the submission
+    if ($submission->ID_Utilisateur !== Auth::id()) {
+        return redirect()->back()->with('error', 'You are not authorized to delete this submission.');
+    }
+
+    // Delete the file from storage if it exists
+    if (Storage::exists($submission->Fichier_Rendu)) {
+        Storage::delete($submission->Fichier_Rendu);
+    }
+
+    // Delete the submission from the database
+    $submission->delete();
+
+    return redirect()->back()->with('success', 'Submission deleted successfully.');
+}
 
 
     // ====================================================
