@@ -13,6 +13,7 @@ use App\Models\Filiere;
 use App\Models\User;
 use App\Models\Salle;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ProfesseurDashboardController extends Controller
 {
@@ -407,5 +408,34 @@ class ProfesseurDashboardController extends Controller
         Storage::delete($resource->file_path);
         $resource->delete();
         return redirect()->route('professeur.courseResources', $resource->ID_Cours)->with('success', 'Ressource supprimée avec succès.');
+    }
+
+    public function showCahierDeTexteForm()
+    {
+        return view('professeur.cahier-de-texte');
+    }
+
+    // Générer le PDF du cahier de texte
+    public function generateCahierDeTextePDF(Request $request)
+    {
+        // Récupérer les dates de début et de fin
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        // Filtrer les séances dans la période sélectionnée
+        $seances = Seance::whereBetween('Date_Seance', [$startDate, $endDate])->get();
+
+        // Filtrer les devoirs dans la période sélectionnée
+        $devoirs = Devoir::whereBetween('created_at', [$startDate, $endDate])->get();
+
+        // Filtrer les cours associés aux séances
+        $coursIds = $seances->pluck('ID_Cours')->unique();
+        $cours = Cours::whereIn('ID_Cours', $coursIds)->get();
+
+        // Générer le PDF
+        $pdf = Pdf::loadView('professeur.cahier-de-texte-pdf', compact('seances', 'devoirs', 'cours', 'startDate', 'endDate'));
+
+        // Télécharger le PDF
+        return $pdf->download('cahier-de-texte.pdf');
     }
 }

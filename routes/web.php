@@ -157,6 +157,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/resources/{resourceId}/edit', [ProfesseurDashboardController::class, 'editCourseResource'])->name('professeur.courseResources.edit');
     Route::put('/resources/{resourceId}', [ProfesseurDashboardController::class, 'updateCourseResource'])->name('professeur.courseResources.update');
     Route::delete('/resources/{resourceId}', [ProfesseurDashboardController::class, 'deleteCourseResource'])->name('professeur.courseResources.delete');
+    Route::get('/professeur/cahier-de-texte', [ProfesseurDashboardController::class, 'showCahierDeTexteForm'])->name('professeur.cahier-de-texte');
+    Route::post('/professeur/cahier-de-texte/generate', [ProfesseurDashboardController::class, 'generateCahierDeTextePDF'])->name('professeur.cahier-de-texte.generate');
 
 
 

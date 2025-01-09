@@ -91,6 +91,13 @@
                             <span>Soumissions</span>
                         </a>
                     </li>
+                    <!-- Nouvel élément pour générer le cahier de texte -->
+                    <li class="nav-item {{ request()->routeIs('professeur.cahier-de-texte') ? 'active' : '' }}">
+                        <a href="{{ route('professeur.cahier-de-texte') }}" class="nav-link">
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Cahier de Texte</span>
+                        </a>
+                    </li>
                 @endif
 
                 <!-- Menu for Students
