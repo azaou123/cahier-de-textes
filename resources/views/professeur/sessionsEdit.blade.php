@@ -52,33 +52,40 @@
 
         <div class="container">
           <div class="page-inner">
-            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4" >
-              <div>
-                <h3 class="fw-bold mb-3">Dashboard</h3>
-                <h6 class="op-7 mb-2">Free Bootstrap 5 Admin Dashboard</h6>
-              </div>
-              <div class="ms-md-auto py-2 py-md-0">
-                <a href="#" class="btn btn-label-info btn-round me-2">Manage</a>
-                <a href="#" class="btn btn-primary btn-round">Add Customer</a>
-              </div>
-            </div>
             <h2>Modifier la Séance</h2>
             <form action="{{ route('professeur.sessions.update', $seance->ID_Seance) }}" method="POST">
                 @csrf
+                @foreach ($errors->all() as $error)
+                  <li>{{ $error }}</li>
+                @endforeach
                 @method('PUT')
+
+                <!-- Description de la séance -->
+                <div class="form-group">
+                    <label for="description">Description de la séance</label>
+                    <textarea id="description" name="description" class="form-control rich-textarea">{{ $seance->description }}</textarea>
+                </div>
+
+                <!-- Date de la séance -->
                 <div class="form-group">
                     <label for="Date_Seance">Date de la Séance</label>
                     <input type="date" name="Date_Seance" id="Date_Seance" class="form-control" 
                         value="{{ \Carbon\Carbon::parse($seance->Date_Seance)->format('Y-m-d') }}" required>
                 </div>
+
+                <!-- Heure de début -->
                 <div class="form-group">
                     <label for="Heure_Debut">Heure de Début</label>
                     <input type="time" name="Heure_Debut" id="Heure_Debut" class="form-control" value="{{ $seance->Heure_Debut }}" required>
                 </div>
+
+                <!-- Heure de fin -->
                 <div class="form-group">
                     <label for="Heure_Fin">Heure de Fin</label>
                     <input type="time" name="Heure_Fin" id="Heure_Fin" class="form-control" value="{{ $seance->Heure_Fin }}" required>
                 </div>
+
+                <!-- Cours -->
                 <div class="form-group">
                     <label for="ID_Cours">Cours</label>
                     <select name="ID_Cours" id="ID_Cours" class="form-control" required>
@@ -89,6 +96,8 @@
                         @endforeach
                     </select>
                 </div>
+
+                <!-- Salle -->
                 <div class="form-group">
                     <label for="ID_Salle">Salle</label>
                     <select name="ID_Salle" id="ID_Salle" class="form-control" required>
@@ -99,12 +108,16 @@
                         @endforeach
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Enregistrer
-                </button>
-                <a href="{{ route('professeur.sessions') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Annuler
-                </a>
+
+                <!-- Boutons de soumission et d'annulation -->
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Enregistrer
+                    </button>
+                    <a href="{{ route('professeur.sessions') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Annuler
+                    </a>
+                </div>
             </form>
           </div>
         </div>

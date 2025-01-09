@@ -17,6 +17,7 @@ class Seance extends Model
         'Heure_Fin',
         'ID_Cours',
         'ID_Salle',
+        'description'
     ];
 
     // Relationships

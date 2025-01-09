@@ -122,16 +122,27 @@ class ProfesseurDashboardController extends Controller
 
     public function storeSession(Request $request)
     {
+        // Debug the request data
+
         // Validation des données
         $request->validate([
             'Date_Seance' => 'required|date',
             'Heure_Debut' => 'required|date_format:H:i',
             'Heure_Fin' => 'required|date_format:H:i|after:Heure_Debut',
             'ID_Cours' => 'required|exists:cours,ID_Cours',
+            'ID_Salle' => 'required|exists:salles,ID_Salle',
+            'description' => 'required|string', // Validation pour la description
         ]);
 
         // Créer une nouvelle séance
-        Seance::create($request->all());
+        Seance::create([
+            'Date_Seance' => $request->Date_Seance,
+            'Heure_Debut' => $request->Heure_Debut,
+            'Heure_Fin' => $request->Heure_Fin,
+            'ID_Cours' => $request->ID_Cours,
+            'ID_Salle' => $request->ID_Salle,
+            'description' => $request->description, // Enregistrer la description
+        ]);
 
         return redirect()->route('professeur.sessions')->with('success', 'Séance créée avec succès.');
     }
@@ -153,11 +164,20 @@ class ProfesseurDashboardController extends Controller
             'Heure_Debut' => 'required|date_format:H:i',
             'Heure_Fin' => 'required|date_format:H:i|after:Heure_Debut',
             'ID_Cours' => 'required|exists:cours,ID_Cours',
+            'ID_Salle' => 'required|exists:salles,ID_Salle',
+            'description' => 'nullable|string', // Validation pour la description
         ]);
 
         // Mettre à jour la séance
         $seance = Seance::findOrFail($id);
-        $seance->update($request->all());
+        $seance->update([
+            'Date_Seance' => $request->Date_Seance,
+            'Heure_Debut' => $request->Heure_Debut,
+            'Heure_Fin' => $request->Heure_Fin,
+            'ID_Cours' => $request->ID_Cours,
+            'ID_Salle' => $request->ID_Salle,
+            'description' => $request->description, // Mettre à jour la description
+        ]);
 
         return redirect()->route('professeur.sessions')->with('success', 'Séance mise à jour avec succès.');
     }

@@ -107,13 +107,12 @@
             </div>
 
             <!-- Remember Me -->
-            <div class="form-group form-check">
+            <!-- <div class="form-group form-check">
                 <input id="remember_me" type="checkbox" class="form-check-input" name="remember">
                 <label for="remember_me" class="form-check-label">Remember me</label>
-            </div>
+            </div> -->
 
             <div class="d-flex justify-content-between">
-                <a href="/password/reset" class="link">Forgot your password?</a>
                 <button type="submit" class="btn primary-btn">Log in</button>
             </div>
         </form>
