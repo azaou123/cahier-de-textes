@@ -8,7 +8,7 @@ class CreateRendusDevoirTable extends Migration
 {
     public function up()
     {
-        Schema::create('rendus_devoir', function (Blueprint $table) {
+        Schema::create('rendu_devoirs', function (Blueprint $table) {
             $table->id('ID_Rendu');
             $table->unsignedBigInteger('ID_Devoir'); // Foreign key column
             $table->unsignedBigInteger('ID_Utilisateur'); // Foreign key column

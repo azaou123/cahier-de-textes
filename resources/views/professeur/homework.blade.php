@@ -54,16 +54,16 @@
                                   </td>
                                   <td>
                                     <a href="{{ route('professeur.homework.submissions', $devoir->ID_Devoir) }}" class="btn btn-sm btn-info">
-                                        <i class="fas fa-eye"></i> Voir
+                                        <i class="fas fa-eye"></i>
                                     </a>
                                     <a href="{{ route('professeur.homework.edit', $devoir->ID_Devoir) }}" class="btn btn-sm btn-warning">
-                                        <i class="fas fa-edit"></i> Modifier
+                                        <i class="fas fa-edit"></i>
                                     </a>
                                     <form action="{{ route('professeur.homework.delete', $devoir->ID_Devoir) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce devoir ?')">
-                                            <i class="fas fa-trash"></i> Supprimer
+                                            <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
                                 </td>

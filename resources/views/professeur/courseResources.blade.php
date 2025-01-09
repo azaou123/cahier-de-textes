@@ -1,45 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Kaiadmin - Bootstrap 5 Admin Dashboard</title>
-    <meta
-      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-      name="viewport"
-    />
-    <link
-      rel="icon"
-      href="../../img/kaiadmin/favicon.ico"
-      type="image/x-icon"
-    />
-
-    <!-- Fonts and icons -->
-    <script src="../../js/plugin/webfont/webfont.min.js"></script>
-    <script>
-      WebFont.load({
-        google: { families: ["Public Sans:300,400,500,600,700"] },
-        custom: {
-          families: [
-            "Font Awesome 5 Solid",
-            "Font Awesome 5 Regular",
-            "Font Awesome 5 Brands",
-            "simple-line-icons",
-          ],
-          urls: ["../../css/fonts.min.css"],
-        },
-        active: function () {
-          sessionStorage.fonts = true;
-        },
-      });
-    </script>
-
-    <!-- CSS Files -->
-    <link rel="stylesheet" href="../../css/bootstrap.min.css" />
-    <link rel="stylesheet" href="../../css/plugins.min.css" />
-    <link rel="stylesheet" href="../../css/kaiadmin.min.css" />
-
-    <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link rel="stylesheet" href="../../css/demo.css" />
+  @include('../includes/head')
   </head>
   <body>
     <div class="wrapper">
@@ -52,20 +14,10 @@
 
         <div class="container">
           <div class="page-inner">
-            <div
-              class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4"
-            >
-              <div>
-                <h3 class="fw-bold mb-3">Dashboard</h3>
-                <h6 class="op-7 mb-2">Free Bootstrap 5 Admin Dashboard</h6>
-              </div>
-              <div class="ms-md-auto py-2 py-md-0">
-                <a href="#" class="btn btn-label-info btn-round me-2">Manage</a>
-                <a href="#" class="btn btn-primary btn-round">Add Customer</a>
-              </div>
+            <div class="row my-3">
+              <div class="col-8"><h3>Ressources pour le cours: {{ $course->Nom_Cours }}</h1></div>
+              <div class="col-4"><a href="{{ route('professeur.courseResources.create', $course->ID_Cours) }}" class="btn btn-primary">Ajouter une ressource</a></div>
             </div>
-            <h1>Ressources pour le cours: {{ $course->Nom_Cours }}</h1>
-            <a href="{{ route('professeur.courseResources.create', $course->ID_Cours) }}" class="btn btn-primary">Ajouter une ressource</a>
             <table class="table">
                 <thead>
                     <tr>
@@ -82,12 +34,19 @@
                         <td>{{ $resource->description }}</td>
                         <td><a href="{{ Storage::url($resource->file_path) }}" target="_blank">Télécharger</a></td>
                         <td>
-                            <a href="{{ route('professeur.courseResources.edit', $resource->id) }}" class="btn btn-warning">Modifier</a>
-                            <form action="{{ route('professeur.courseResources.delete', $resource->id) }}" method="POST" style="display:inline;">
+                          <!-- Bouton Modifier avec une icône -->
+                          <a href="{{ route('professeur.courseResources.edit', $resource->id) }}" class="btn btn-warning btn-sm">
+                              <i class="fas fa-edit"></i> <!-- Icône de modification -->
+                          </a>
+
+                          <!-- Bouton Supprimer avec une icône -->
+                          <form action="{{ route('professeur.courseResources.delete', $resource->id) }}" method="POST" style="display:inline;">
                               @csrf
                               @method('DELETE')
-                              <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette ressource ?')">Supprimer</button>
-                            </form>
+                              <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette ressource ?')">
+                                  <i class="fas fa-trash"></i> <!-- Icône de suppression -->
+                              </button>
+                          </form>
                         </td>
                     </tr>
                     @endforeach
@@ -96,100 +55,12 @@
           </div>
         </div>
 
-        <footer class="footer">
-          <div class="container-fluid d-flex justify-content-between">
-            <nav class="pull-left">
-              <ul class="nav">
-                <li class="nav-item">
-                  <a class="nav-link" href="http://www.themekita.com">
-                    ThemeKita
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#"> Help </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#"> Licenses </a>
-                </li>
-              </ul>
-            </nav>
-            <div class="copyright">
-              2024, made with <i class="fa fa-heart heart text-danger"></i> by
-              <a href="http://www.themekita.com">ThemeKita</a>
-            </div>
-            <div>
-              Distributed by
-              <a target="_blank" href="https://themewagon.com/">ThemeWagon</a>.
-            </div>
-          </div>
-        </footer>
+        @include('../includes/footer')
       </div>
 
       
     </div>
     <!--   Core JS Files   -->
-    <script src="../../js/core/jquery-3.7.1.min.js"></script>
-    <script src="../../js/core/popper.min.js"></script>
-    <script src="../../js/core/bootstrap.min.js"></script>
-
-    <!-- jQuery Scrollbar -->
-    <script src="../../js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
-
-    <!-- Chart JS -->
-    <script src="../../js/plugin/chart.js/chart.min.js"></script>
-
-    <!-- jQuery Sparkline -->
-    <script src="../../js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
-
-    <!-- Chart Circle -->
-    <script src="../../js/plugin/chart-circle/circles.min.js"></script>
-
-    <!-- Datatables -->
-    <script src="../../js/plugin/datatables/datatables.min.js"></script>
-
-    <!-- Bootstrap Notify -->
-    <script src="../../js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
-
-    <!-- jQuery Vector Maps -->
-    <script src="../../js/plugin/jsvectormap/jsvectormap.min.js"></script>
-    <script src="../../js/plugin/jsvectormap/world.js"></script>
-
-    <!-- Sweet Alert -->
-    <script src="../../js/plugin/sweetalert/sweetalert.min.js"></script>
-
-    <!-- Kaiadmin JS -->
-    <script src="../../js/kaiadmin.min.js"></script>
-
-    <!-- Kaiadmin DEMO methods, don't include it in your project! -->
-    <script src="../../js/setting-demo.js"></script>
-    <script src="../../js/demo.js"></script>
-    <script>
-      $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
-        type: "line",
-        height: "70",
-        width: "100%",
-        lineWidth: "2",
-        lineColor: "#177dff",
-        fillColor: "rgba(23, 125, 255, 0.14)",
-      });
-
-      $("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
-        type: "line",
-        height: "70",
-        width: "100%",
-        lineWidth: "2",
-        lineColor: "#f3545d",
-        fillColor: "rgba(243, 84, 93, .14)",
-      });
-
-      $("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
-        type: "line",
-        height: "70",
-        width: "100%",
-        lineWidth: "2",
-        lineColor: "#ffa534",
-        fillColor: "rgba(255, 165, 52, .14)",
-      });
-    </script>
+    @include('../includes/scripts')
   </body>
 </html>
