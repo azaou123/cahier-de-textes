@@ -3,7 +3,7 @@
         <!-- Logo Header -->
         <div class="logo-header" data-background-color="dark">
             <a href="index.html" class="logo" style="font-weight: bold; color: white;">
-                <i class="fas fa-book mx-5"></i> CDT
+                CDT
             </a>
             <div class="nav-toggle">
                 <button class="btn btn-toggle toggle-sidebar">
@@ -23,8 +23,8 @@
         <div class="sidebar-content">
             <ul class="nav nav-secondary">
                 <!-- Dashboard -->
-                <li class="nav-item {{ request()->routeIs('professeur.dashboard') ? 'active' : '' }}">
-                    <a href="{{ route('professeur.dashboard') }}">
+                <li class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                    <a href="{{ route('dashboard') }}">
                         <i class="fas fa-home"></i>
                         <p>Dashboard</p>
                     </a>

@@ -1,18 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Kaiadmin - Bootstrap 5 Admin Dashboard</title>
-    <meta
-      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-      name="viewport"
-    />
-    <link
-      rel="icon"
-      href="../../../img/kaiadmin/favicon.ico"
-      type="image/x-icon"
-    />
-
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
+    <link rel="icon" href="../../../img/kaiadmin/favicon.ico" type="image/x-icon" />
     <!-- Fonts and icons -->
     <script src="../../../js/plugin/webfont/webfont.min.js"></script>
     <script>
@@ -32,112 +24,100 @@
         },
       });
     </script>
-
     <!-- CSS Files -->
     <link rel="stylesheet" href="../../../css/bootstrap.min.css" />
     <link rel="stylesheet" href="../../../css/plugins.min.css" />
     <link rel="stylesheet" href="../../../css/kaiadmin.min.css" />
-
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link rel="stylesheet" href="../../../css/demo.css" />
-  </head>
-  <body>
+</head>
+<body>
     <div class="wrapper">
-      <!-- Sidebar -->
-      @include('../includes/sidebar');
+        <!-- Sidebar -->
+        @include('../includes/sidebar')
 
-      <div class="main-panel">
-        <!-- Man Header -->
-        @include('../includes/mainHeader');
+        <div class="main-panel">
+            <!-- Main Header -->
+            @include('../includes/mainHeader')
 
-        <div class="container">
-          <div class="page-inner">
-            <h1>Editer la salle </h1>
-            <form action="{{ route('admin.salles.update', $salle->ID_Salle) }}" method="POST">
-                @csrf
-                @method('PUT')
-                <div class="form-group">
-                    <label for="Nom_Salle">Nom de la Salle</label>
-                    <input type="text" name="Nom_Salle" class="form-control" value="{{ $salle->Nom_Salle }}" required>
+            <div class="container">
+                <div class="page-inner">
+                    <h1>Modifier le Professeur</h1>
+                    <form action="{{ route('admin.professeurs.update', $professeur->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+
+                        <div class="form-group">
+                            <label for="nom">Nom</label>
+                            <input type="text" class="form-control" id="nom" name="nom" value="{{ old('nom', $professeur->nom) }}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="prenom">Prénom</label>
+                            <input type="text" class="form-control" id="prenom" name="prenom" value="{{ old('prenom', $professeur->prenom) }}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ old('email', $professeur->email) }}" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Mettre à jour</button>
+                        <a href="{{ route('admin.professeurs') }}" class="btn btn-secondary">Annuler</a>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <label for="Capacite">Capacité</label>
-                    <input type="number" name="Capacite" class="form-control" value="{{ $salle->Capacite }}" required>
+            </div>
+
+            <footer class="footer">
+                <div class="container-fluid d-flex justify-content-between">
+                    <nav class="pull-left">
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="http://www.themekita.com">ThemeKita</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Help</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Licenses</a>
+                            </li>
+                        </ul>
+                    </nav>
+                    <div class="copyright">
+                        2024, made with <i class="fa fa-heart heart text-danger"></i> by
+                        <a href="http://www.themekita.com">ThemeKita</a>
+                    </div>
+                    <div>
+                        Distributed by
+                        <a target="_blank" href="https://themewagon.com/">ThemeWagon</a>.
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="Localisation">Localisation</label>
-                    <input type="text" name="Localisation" class="form-control" value="{{ $salle->Localisation }}" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Mettre à jour</button>
-                <a href="{{ route('admin.salles') }}" class="btn btn-secondary">Annuler</a>
-            </form>
-          </div>
+            </footer>
         </div>
-
-        <footer class="footer">
-          <div class="container-fluid d-flex justify-content-between">
-            <nav class="pull-left">
-              <ul class="nav">
-                <li class="nav-item">
-                  <a class="nav-link" href="http://www.themekita.com">
-                    ThemeKita
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#"> Help </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#"> Licenses </a>
-                </li>
-              </ul>
-            </nav>
-            <div class="copyright">
-              2024, made with <i class="fa fa-heart heart text-danger"></i> by
-              <a href="http://www.themekita.com">ThemeKita</a>
-            </div>
-            <div>
-              Distributed by
-              <a target="_blank" href="https://themewagon.com/">ThemeWagon</a>.
-            </div>
-          </div>
-        </footer>
-      </div>
-
-      
     </div>
-    <!--   Core JS Files   -->
+    <!-- Core JS Files -->
     <script src="../../../js/core/jquery-3.7.1.min.js"></script>
     <script src="../../../js/core/popper.min.js"></script>
     <script src="../../../js/core/bootstrap.min.js"></script>
-
     <!-- jQuery Scrollbar -->
     <script src="../../../js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
-
     <!-- Chart JS -->
     <script src="../../../js/plugin/chart.js/chart.min.js"></script>
-
     <!-- jQuery Sparkline -->
     <script src="../../../js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
-
     <!-- Chart Circle -->
     <script src="../../../js/plugin/chart-circle/circles.min.js"></script>
-
     <!-- Datatables -->
     <script src="../../../js/plugin/datatables/datatables.min.js"></script>
-
     <!-- Bootstrap Notify -->
     <script src="../../../js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
-
     <!-- jQuery Vector Maps -->
     <script src="../../../js/plugin/jsvectormap/jsvectormap.min.js"></script>
     <script src="../../../js/plugin/jsvectormap/world.js"></script>
-
     <!-- Sweet Alert -->
     <script src="../../../js/plugin/sweetalert/sweetalert.min.js"></script>
-
     <!-- Kaiadmin JS -->
     <script src="../../../js/kaiadmin.min.js"></script>
-
     <!-- Kaiadmin DEMO methods, don't include it in your project! -->
     <script src="../../../js/setting-demo.js"></script>
     <script src="../../../js/demo.js"></script>
@@ -169,5 +149,5 @@
         fillColor: "rgba(255, 165, 52, .14)",
       });
     </script>
-  </body>
+</body>
 </html>

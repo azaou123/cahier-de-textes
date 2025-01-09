@@ -1,206 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Kaiadmin - Bootstrap 5 Admin Dashboard</title>
-    <meta
-      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-      name="viewport"
-    />
-    <link
-      rel="icon"
-      href="../../img/kaiadmin/favicon.ico"
-      type="image/x-icon"
-    />
-
-    <!-- Fonts and icons -->
-    <script src="../../js/plugin/webfont/webfont.min.js"></script>
-    <script>
-      WebFont.load({
-        google: { families: ["Public Sans:300,400,500,600,700"] },
-        custom: {
-          families: [
-            "Font Awesome 5 Solid",
-            "Font Awesome 5 Regular",
-            "Font Awesome 5 Brands",
-            "simple-line-icons",
-          ],
-          urls: ["../../css/fonts.min.css"],
-        },
-        active: function () {
-          sessionStorage.fonts = true;
-        },
-      });
-    </script>
-
-    <!-- CSS Files -->
-    <link rel="stylesheet" href="../../css/bootstrap.min.css" />
-    <link rel="stylesheet" href="../../css/plugins.min.css" />
-    <link rel="stylesheet" href="../../css/kaiadmin.min.css" />
-
-    <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link rel="stylesheet" href="../../css/demo.css" />
-  </head>
-  <body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Gestion des Professeurs</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../../css/kaiadmin.min.css">
+</head>
+<body>
     <div class="wrapper">
-      <!-- Sidebar -->
-      @include('../includes/sidebar');
+        <!-- Sidebar -->
+        @include('../includes/sidebar')
 
-      <div class="main-panel">
-        <!-- Man Header -->
-        @include('../includes/mainHeader');
+        <div class="main-panel">
+            <!-- Main Header -->
+            @include('../includes/mainHeader')
 
-        <div class="container">
-          <div class="page-inner">
-            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4" >
-              <div>
-                <h3 class="fw-bold mb-3">Dashboard</h3>
-                <h6 class="op-7 mb-2">Free Bootstrap 5 Admin Dashboard</h6>
-              </div>
-              <div class="ms-md-auto py-2 py-md-0">
-                <a href="#" class="btn btn-label-info btn-round me-2">Manage</a>
-                <a href="#" class="btn btn-primary btn-round">Add Customer</a>
-              </div>
+            <div class="container">
+                <div class="page-inner">
+                    <h1>Gestion des Professeurs</h1>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nom</th>
+                                    <th>Prénom</th>
+                                    <th>Email</th>
+                                    <th>Nombre de Cours</th>
+                                    <th>Date d'inscription</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($professeurs as $professeur)
+                                    <tr>
+                                        <td>{{ $professeur->ID_Utilisateur }}</td>
+                                        <td>{{ $professeur->nom }}</td>
+                                        <td>{{ $professeur->prenom }}</td>
+                                        <td>{{ $professeur->email }}</td>
+                                        <td>
+                                            <a href="#" class="course-count" data-bs-toggle="modal" data-bs-target="#coursesModal" data-courses="{{ json_encode($professeur->courses ?? []) }}">
+                                                {{ $professeur->courses ? $professeur->courses->count() : 0 }}
+                                            </a>
+                                        </td>
+                                        <td>{{ $professeur->Date_inscription->format('d/m/Y H:i') }}</td>
+                                        <td>
+                                            <!-- Formulaire pour supprimer -->
+                                            <form action="{{ route('admin.professeurs.delete', $professeur->ID_Utilisateur) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce professeur ?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-            <h1>Gestion des Professeurs</h1>
-    <div class="table-responsive">
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nom</th>
-                    <th>Prénom</th>
-                    <th>Email</th>
-                    <th>Rôle</th>
-                    <th>Date d'inscription</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($professeurs as $professeur)
-                    <tr>
-                        <td>{{ $professeur->ID_Utilisateur }}</td>
-                        <td>{{ $professeur->nom }}</td>
-                        <td>{{ $professeur->prenom }}</td>
-                        <td>{{ $professeur->email }}</td>
-                        <td>{{ $professeur->Role }}</td>
-                        <td>{{ $professeur->Date_inscription->format('d/m/Y H:i') }}</td>
-                        <td>
-                            <!-- Lien pour modifier -->
-                            <a href="{{ route('admin.professeurs.edit', $professeur->ID_Utilisateur) }}" class="btn btn-warning btn-sm">
-                                <i class="fas fa-edit"></i> Modifier
-                            </a>
-                            <!-- Formulaire pour supprimer -->
-                            <form action="{{ route('admin.professeurs.delete', $professeur->ID_Utilisateur) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce professeur ?')">
-                                    <i class="fas fa-trash"></i> Supprimer
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-          </div>
+
+            <!-- Modal for Course Details -->
+            <div class="modal fade" id="coursesModal" tabindex="-1" aria-labelledby="coursesModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="coursesModalLabel">Cours du Professeur</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <ul id="courseList">
+                                <!-- Course names will be populated here -->
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Include Footer -->
+            @include('../includes/footer')
         </div>
-
-        <footer class="footer">
-          <div class="container-fluid d-flex justify-content-between">
-            <nav class="pull-left">
-              <ul class="nav">
-                <li class="nav-item">
-                  <a class="nav-link" href="http://www.themekita.com">
-                    ThemeKita
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#"> Help </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#"> Licenses </a>
-                </li>
-              </ul>
-            </nav>
-            <div class="copyright">
-              2024, made with <i class="fa fa-heart heart text-danger"></i> by
-              <a href="http://www.themekita.com">ThemeKita</a>
-            </div>
-            <div>
-              Distributed by
-              <a target="_blank" href="https://themewagon.com/">ThemeWagon</a>.
-            </div>
-          </div>
-        </footer>
-      </div>
-
-      
     </div>
-    <!--   Core JS Files   -->
-    <script src="../../js/core/jquery-3.7.1.min.js"></script>
-    <script src="../../js/core/popper.min.js"></script>
-    <script src="../../js/core/bootstrap.min.js"></script>
 
-    <!-- jQuery Scrollbar -->
-    <script src="../../js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
-
-    <!-- Chart JS -->
-    <script src="../../js/plugin/chart.js/chart.min.js"></script>
-
-    <!-- jQuery Sparkline -->
-    <script src="../../js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
-
-    <!-- Chart Circle -->
-    <script src="../../js/plugin/chart-circle/circles.min.js"></script>
-
-    <!-- Datatables -->
-    <script src="../../js/plugin/datatables/datatables.min.js"></script>
-
-    <!-- Bootstrap Notify -->
-    <script src="../../js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
-
-    <!-- jQuery Vector Maps -->
-    <script src="../../js/plugin/jsvectormap/jsvectormap.min.js"></script>
-    <script src="../../js/plugin/jsvectormap/world.js"></script>
-
-    <!-- Sweet Alert -->
-    <script src="../../js/plugin/sweetalert/sweetalert.min.js"></script>
-
-    <!-- Kaiadmin JS -->
-    <script src="../../js/kaiadmin.min.js"></script>
-
-    <!-- Kaiadmin DEMO methods, don't include it in your project! -->
-    <script src="../../js/setting-demo.js"></script>
-    <script src="../../js/demo.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
     <script>
-      $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
-        type: "line",
-        height: "70",
-        width: "100%",
-        lineWidth: "2",
-        lineColor: "#177dff",
-        fillColor: "rgba(23, 125, 255, 0.14)",
-      });
+        $(document).ready(function() {
+            $('.course-count').on('click', function() {
+                var courses = $(this).data('courses');
+                console.log(courses); // Debug the data being passed
 
-      $("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
-        type: "line",
-        height: "70",
-        width: "100%",
-        lineWidth: "2",
-        lineColor: "#f3545d",
-        fillColor: "rgba(243, 84, 93, .14)",
-      });
+                var courseList = $('#courseList');
+                courseList.empty(); // Clear previous list
 
-      $("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
-        type: "line",
-        height: "70",
-        width: "100%",
-        lineWidth: "2",
-        lineColor: "#ffa534",
-        fillColor: "rgba(255, 165, 52, .14)",
-      });
+                if (courses && courses.length > 0) {
+                    courses.forEach(function(course) {
+                        courseList.append('<li>' + course.Nom_Cours + '</li>');
+                    });
+                } else {
+                    courseList.append('<li>Aucun cours trouvé.</li>');
+                }
+            });
+        });
     </script>
-  </body>
+</body>
 </html>

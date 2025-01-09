@@ -67,7 +67,7 @@ class AdminDashboardController extends Controller
     {
         // Récupérer le professeur à modifier
         $professeur = User::findOrFail($id);
-        return view('admin.professeurs.edit', compact('professeur'));
+        return view('admin.editProfesseur', compact('professeur'));
     }
 
     public function updateProfesseur(Request $request, $id)

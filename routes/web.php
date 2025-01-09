@@ -11,7 +11,18 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $user = Auth::user();
+
+    switch ($user->Role) {
+        case 'admin':
+            return redirect()->route('admin.dashboard');
+        case 'professeur':
+            return redirect()->route('professeur.dashboard');
+        case 'etudiant':
+            return redirect()->route('etudiant.dashboard');
+        default:
+            return view('dashboard'); // Fallback for other roles or no role
+    }
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -40,7 +51,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/create', [AdminDashboardController::class, 'createProfesseur'])->name('admin.professeurs.create');
             Route::post('/store', [AdminDashboardController::class, 'storeProfesseur'])->name('admin.professeurs.store');
             Route::get('/edit/{id}', [AdminDashboardController::class, 'editProfesseur'])->name('admin.professeurs.edit');
-            Route::put('/update/{id}', [AdminDashboardController::class, 'updateProfesseur'])->name('admin.professeurs.update');
+            Route::put('/admin/professeurs/edit/{id}', [AdminDashboardController::class, 'updateProfesseur'])->name('admin.professeurs.update');
             Route::delete('/delete/{id}', [AdminDashboardController::class, 'deleteProfesseur'])->name('admin.professeurs.delete');
         });
     

@@ -103,4 +103,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Cours::class, 'cours_etudiant', 'ID_Utilisateur', 'ID_Cours');
     }
+
+    public function courses()
+    {
+        return $this->hasMany(Cours::class, 'ID_Professeur'); // Adjust the foreign key if necessary
+    }
 }
