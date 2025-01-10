@@ -48,13 +48,13 @@
                                         <td>{{ $seance->salle->Nom_Salle ?? 'Non spécifiée' }}</td>
                                         <td>
                                             <a href="{{ route('professeur.sessions.edit', $seance->ID_Seance) }}" class="btn btn-sm btn-warning">
-                                                <i class="fas fa-edit"></i> Modifier
+                                                <i class="fas fa-edit"></i> 
                                             </a>
                                             <form action="{{ route('professeur.sessions.delete', $seance->ID_Seance) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette séance ?')">
-                                                    <i class="fas fa-trash"></i> Supprimer
+                                                    <i class="fas fa-trash"></i> 
                                                 </button>
                                             </form>
                                         </td>
