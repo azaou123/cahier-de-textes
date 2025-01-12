@@ -33,7 +33,7 @@ class DevoirFactory extends Factory
             'Titre_Devoir' => $this->faker->randomElement($assignmentTitles),
             'Description_Devoir' => $this->faker->randomElement($assignmentDescriptions),
             'Date_Limite' => $this->faker->dateTimeBetween('now', '+1 month'),
-            'file_path' => 'devoirs/' . $this->faker->slug . '.pdf', // More meaningful file names
+            'file_path' => 'Badr_AZAOU_Rapport_FR_ISI_S3.pdf', // More meaningful file names
             'ID_Cours' => Cours::inRandomOrder()->first()->ID_Cours, // Random course
             'created_at' => now(),
             'updated_at' => now(),

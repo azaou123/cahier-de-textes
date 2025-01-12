@@ -34,7 +34,7 @@ class RenduDevoirFactory extends Factory
         return [
             'ID_Devoir' => Devoir::inRandomOrder()->first()->ID_Devoir, // Random devoir
             'ID_Utilisateur' => User::where('Role', 'etudiant')->inRandomOrder()->first()->ID_Utilisateur, // Random student
-            'Fichier_Rendu' => 'rendus/' . $this->faker->randomElement($fileNames), // More meaningful file names
+            'Fichier_Rendu' => 'Badr_AZAOU_Rapport_FR_ISI_S3.pdf', // More meaningful file names
             'Date_Rendu' => $this->faker->dateTimeBetween('-1 month', 'now'),
             'Note' => $this->faker->optional(0.7)->randomFloat(2, 0, 20), // 70% chance of having a grade
             'Commentaire' => $this->faker->optional(0.5)->randomElement($comments), // 50% chance of having a comment

@@ -9,6 +9,7 @@
             margin: 0;
             padding: 20px;
             color: #333;
+            line-height: 1.6;
         }
         h1, h2 {
             color: #2c3e50;
@@ -25,27 +26,6 @@
             border-bottom: 2px solid #2c3e50;
             padding-bottom: 5px;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background-color: #2c3e50;
-            color: white;
-            font-weight: bold;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
         .header {
             text-align: center;
             margin-bottom: 20px;
@@ -53,6 +33,38 @@
         .header img {
             width: 100px;
             height: auto;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        .section-content {
+            margin-left: 20px;
+        }
+        .item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 4px solid #2c3e50;
+            background-color: #fff;
+            border-radius: 4px;
+        }
+        .item-title {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .item-details {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #555;
         }
         .footer {
             text-align: center;
@@ -70,67 +82,52 @@
     </div>
 
     <!-- Séances -->
-    <h2>Séances</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Heure</th>
-                <th>Cours</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div class="section">
+        <div class="section-title">Séances</div>
+        <div class="section-content">
             @foreach($seances as $seance)
-                <tr>
-                    <td>{{ $seance->Date_Seance }}</td>
-                    <td>{{ $seance->Heure_Debut }} - {{ $seance->Heure_Fin }}</td>
-                    <td>{{ $seance->cours->Nom_Cours }}</td>
-                    <td>{{ $seance->description }}</td>
-                </tr>
+                <div class="item">
+                    <div class="item-title">{{ $seance->cours->Nom_Cours }}</div>
+                    <div class="item-details">
+                        <strong>Date :</strong> {{ $seance->Date_Seance }}<br>
+                        <strong>Heure :</strong> {{ $seance->Heure_Debut }} - {{ $seance->Heure_Fin }}<br>
+                        <strong>Description :</strong> {{ $seance->description }}
+                    </div>
+                </div>
             @endforeach
-        </tbody>
-    </table>
+        </div>
+    </div>
 
     <!-- Devoirs -->
-    <h2>Devoirs</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Titre</th>
-                <th>Description</th>
-                <th>Date Limite</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div class="section">
+        <div class="section-title">Devoirs</div>
+        <div class="section-content">
             @foreach($devoirs as $devoir)
-                <tr>
-                    <td>{{ $devoir->Titre_Devoir }}</td>
-                    <td>{{ $devoir->Description_Devoir }}</td>
-                    <td>{{ $devoir->Date_Limite }}</td>
-                </tr>
+                <div class="item">
+                    <div class="item-title">{{ $devoir->Titre_Devoir }}</div>
+                    <div class="item-details">
+                        <strong>Description :</strong> {{ $devoir->Description_Devoir }}<br>
+                        <strong>Date Limite :</strong> {{ $devoir->Date_Limite }}
+                    </div>
+                </div>
             @endforeach
-        </tbody>
-    </table>
+        </div>
+    </div>
 
     <!-- Cours -->
-    <h2>Cours</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Nom du Cours</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div class="section">
+        <div class="section-title">Cours</div>
+        <div class="section-content">
             @foreach($cours as $cour)
-                <tr>
-                    <td>{{ $cour->Nom_Cours }}</td>
-                    <td>{{ $cour->Description_Cours }}</td>
-                </tr>
+                <div class="item">
+                    <div class="item-title">{{ $cour->Nom_Cours }}</div>
+                    <div class="item-details">
+                        <strong>Description :</strong> {{ $cour->Description_Cours }}
+                    </div>
+                </div>
             @endforeach
-        </tbody>
-    </table>
+        </div>
+    </div>
 
     <!-- Footer -->
     <div class="footer">

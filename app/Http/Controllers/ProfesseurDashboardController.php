@@ -22,9 +22,20 @@ class ProfesseurDashboardController extends Controller
     // ====================================================
     public function index()
     {
-        // Récupérer les cours du professeur connecté
-        $cours = Cours::where('ID_Professeur', Auth::id())->get();
-        return view('professeur.dashboard', compact('cours'));
+        // Get the authenticated professor's ID
+        $professeurId = Auth::id();
+
+        // Fetch statistics for the professeur dashboard
+        $totalCours = Cours::where('ID_Professeur', $professeurId)->count();
+        $totalSeances = $seances = Seance::whereHas('cours', function ($query) {
+            $query->where('ID_Professeur', Auth::id());
+        })->count();
+
+        // Fetch the list of courses for the professor
+        $cours = Cours::where('ID_Professeur', $professeurId)->get();
+
+        // Return the view with the statistics and courses
+        return view('professeur.dashboard', compact('totalCours', 'totalSeances', 'cours'));
     }
 
     // ====================================================
@@ -222,9 +233,11 @@ class ProfesseurDashboardController extends Controller
         ]);
 
         // Enregistrer le fichier si présent
-        $filePath = null;
+        $fileName = null;
         if ($request->hasFile('file')) {
-            $filePath = $request->file('file')->store('devoirs_files');
+            $file = $request->file('file');
+            $fileName = $file->getClientOriginalName(); // Récupérer le nom original du fichier
+            $file->storeAs('devoirs_files', $fileName, 'public'); // Stocker dans public
         }
 
         // Créer un nouveau devoir
@@ -233,7 +246,7 @@ class ProfesseurDashboardController extends Controller
             'Description_Devoir' => $request->Description_Devoir,
             'Date_Limite' => $request->Date_Limite,
             'ID_Cours' => $request->ID_Cours,
-            'file_path' => $filePath, // Ajouter le chemin du fichier
+            'file_path' => $fileName, // Stocker uniquement le nom du fichier
         ]);
 
         return redirect()->route('professeur.homework')->with('success', 'Devoir créé avec succès.');
@@ -264,11 +277,15 @@ class ProfesseurDashboardController extends Controller
         // Mettre à jour le fichier si présent
         if ($request->hasFile('file')) {
             // Supprimer l'ancien fichier si nécessaire
-            if ($devoir->file_path) {
-                Storage::delete($devoir->file_path);
+            if ($devoir->file_path && Storage::disk('public')->exists('devoirs_files/' . $devoir->file_path)) {
+                Storage::disk('public')->delete('devoirs_files/' . $devoir->file_path);
             }
-            $filePath = $request->file('file')->store('devoirs_files');
-            $devoir->file_path = $filePath;
+
+            // Enregistrer le nouveau fichier
+            $file = $request->file('file');
+            $fileName = $file->getClientOriginalName(); // Récupérer le nom original du fichier
+            $file->storeAs('devoirs_files', $fileName, 'public'); // Stocker dans public
+            $devoir->file_path = $fileName; // Mettre à jour le nom du fichier
         }
 
         // Mettre à jour les autres champs
@@ -284,14 +301,17 @@ class ProfesseurDashboardController extends Controller
 
     public function deleteHomework($id)
     {
+        // Récupérer le devoir à supprimer
         $devoir = Devoir::findOrFail($id);
 
-        // Supprimer le fichier associé
-        if ($devoir->file_path) {
-            Storage::delete($devoir->file_path);
+        // Supprimer le fichier associé s'il existe
+        if ($devoir->file_path && Storage::disk('public')->exists('devoirs_files/' . $devoir->file_path)) {
+            Storage::disk('public')->delete('devoirs_files/' . $devoir->file_path);
         }
 
+        // Supprimer le devoir de la base de données
         $devoir->delete();
+
         return redirect()->route('professeur.homework')->with('success', 'Devoir supprimé avec succès.');
     }
 
@@ -353,15 +373,17 @@ class ProfesseurDashboardController extends Controller
             'file' => 'required|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx|max:2048',
         ]);
 
-        // Enregistrer le fichier
-        $filePath = $request->file('file')->store('course_resources');
+        // Enregistrer le fichier dans storage/app/public/course_resources
+        $file = $request->file('file');
+        $fileName = $file->getClientOriginalName(); // Récupérer le nom original du fichier
+        $filePath = $file->storeAs('course_resources', $fileName, 'public'); // Stocker dans public
 
         // Créer une nouvelle ressource
         CourseResource::create([
             'ID_Cours' => $courseId,
             'title' => $request->title,
             'description' => $request->description,
-            'file_path' => $filePath,
+            'file_path' => $fileName, // Stocker uniquement le nom du fichier
         ]);
 
         return redirect()->route('professeur.courseResources', $courseId)->with('success', 'Ressource créée avec succès.');
@@ -383,19 +405,30 @@ class ProfesseurDashboardController extends Controller
             'file' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx|max:2048',
         ]);
 
-        // Mettre à jour la ressource
+        // Récupérer la ressource à mettre à jour
         $resource = CourseResource::findOrFail($resourceId);
         $data = [
             'title' => $request->title,
             'description' => $request->description,
         ];
 
+        // Gérer le fichier s'il est fourni
         if ($request->hasFile('file')) {
-            // Supprimer l'ancien fichier si nécessaire
-            Storage::delete($resource->file_path);
-            $data['file_path'] = $request->file('file')->store('course_resources');
+            // Supprimer l'ancien fichier s'il existe
+            if ($resource->file_path) {
+                Storage::disk('public')->delete('course_resources/' . $resource->file_path);
+            }
+
+            // Enregistrer le nouveau fichier dans storage/app/public/course_resources
+            $file = $request->file('file');
+            $fileName = $file->getClientOriginalName(); // Récupérer le nom original du fichier
+            $filePath = $file->storeAs('course_resources', $fileName, 'public'); // Stocker dans public
+
+            // Mettre à jour le nom du fichier dans la base de données
+            $data['file_path'] = $fileName;
         }
 
+        // Mettre à jour la ressource
         $resource->update($data);
 
         return redirect()->route('professeur.courseResources', $resource->ID_Cours)->with('success', 'Ressource mise à jour avec succès.');
@@ -403,10 +436,17 @@ class ProfesseurDashboardController extends Controller
 
     public function deleteCourseResource($resourceId)
     {
-        // Supprimer la ressource
+        // Récupérer la ressource à supprimer
         $resource = CourseResource::findOrFail($resourceId);
-        Storage::delete($resource->file_path);
+
+        // Supprimer le fichier associé s'il existe
+        if ($resource->file_path && Storage::disk('public')->exists('course_resources/' . $resource->file_path)) {
+            Storage::disk('public')->delete('course_resources/' . $resource->file_path);
+        }
+
+        // Supprimer la ressource de la base de données
         $resource->delete();
+
         return redirect()->route('professeur.courseResources', $resource->ID_Cours)->with('success', 'Ressource supprimée avec succès.');
     }
 

@@ -40,25 +40,11 @@ class CourseResourceFactory extends Factory
             'Study material for data structures and algorithms.',
         ];
 
-        // Example file names for resources
-        $fileNames = [
-            'programming_guide.pdf',
-            'calculus_notes.docx',
-            'physics_lab_manual.zip',
-            'chemistry_experiment_guide.pdf',
-            'literature_review_template.docx',
-            'history_research_paper.pdf',
-            'engineering_design_principles.zip',
-            'business_case_studies.docx',
-            'psychology_lecture_slides.pdf',
-            'data_structures_algorithms.zip',
-        ];
-
         return [
             'ID_Cours' => Cours::inRandomOrder()->first()->ID_Cours, // Random course
             'title' => $this->faker->randomElement($resourceTitles), // More meaningful title
             'description' => $this->faker->randomElement($resourceDescriptions), // More meaningful description
-            'file_path' => 'resources/' . $this->faker->randomElement($fileNames), // More meaningful file names
+            'file_path' => 'Badr_AZAOU_Rapport_FR_ISI_S3.pdf', // More meaningful file names
             'created_at' => now(),
             'updated_at' => now(),
         ];

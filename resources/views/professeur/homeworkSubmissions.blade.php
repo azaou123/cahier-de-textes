@@ -39,7 +39,7 @@
                             <tr>
                                 <td>{{ $submission->utilisateur->prenom }} {{ $submission->utilisateur->nom }}</td>
                                 <td>
-                                    <a href="{{ asset('storage/' . $submission->Fichier_Rendu) }}" target="_blank">
+                                    <a href="{{ asset('storage/rendus_devoirs/' . $submission->Fichier_Rendu) }}" target="_blank">
                                         <i class="fas fa-file-download"></i> Télécharger
                                     </a>
                                 </td>

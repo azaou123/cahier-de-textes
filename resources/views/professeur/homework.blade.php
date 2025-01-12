@@ -46,11 +46,11 @@
                                   <td>{{ \Carbon\Carbon::parse($devoir->Date_Limite)->format('d/m/Y H:i') }}</td>
                                   <td>{{ $devoir->cours->Nom_Cours }}</td>
                                   <td>
-                                      @if ($devoir->file_path)
-                                          <a href="{{ Storage::url($devoir->file_path) }}" target="_blank">Télécharger</a>
-                                      @else
-                                          Aucun fichier
-                                      @endif
+                                    @if ($devoir->file_path)
+                                        <a href="{{ asset('storage/devoirs_files/' . $devoir->file_path) }}" target="_blank">Télécharger</a>
+                                    @else
+                                        Aucun fichier
+                                    @endif
                                   </td>
                                   <td>
                                     <a href="{{ route('professeur.homework.submissions', $devoir->ID_Devoir) }}" class="btn btn-sm btn-info">

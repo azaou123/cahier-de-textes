@@ -35,53 +35,54 @@ class EtudiantDashboardController extends Controller
 
         return view('etudiant.homework', compact('devoirs'));
     }
+
+
     public function show($id)
-{
-    $cours = Cours::with('professeur', 'filiere')->findOrFail($id);
-    $ressources = $cours->ressources()->orderBy('created_at', 'asc')->get();
-    $devoirs = $cours->devoirs()->orderBy('created_at', 'asc')->get();
+    {
+        // Récupérer le cours avec le professeur et la filière
+        $cours = Cours::with('professeur', 'filiere')->findOrFail($id);
 
-    \Log::info('Devoirs: ' . json_encode($devoirs));
-    \Log::info('User ID: ' . Auth::id());
+        // Récupérer les ressources du cours triées par date de création
+        $ressources = $cours->ressources()->orderBy('created_at', 'asc')->get();
 
-    $existingSubmission = null;
-    if ($devoirs->isNotEmpty()) {
-        $devoirId = $devoirs->first()->ID_Devoir; // Use ID_Devoir instead of id
-        $existingSubmission = RenduDevoir::withTrashed()
-            ->where('ID_Devoir', $devoirId)
-            ->where('ID_Utilisateur', Auth::id())
-            ->first();
+        // Récupérer les devoirs du cours triés par date de création
+        $devoirs = $cours->devoirs()->orderBy('created_at', 'asc')->get();
 
-        \Log::info('Query executed: ' . RenduDevoir::withTrashed()
-            ->where('ID_Devoir', $devoirId)
-            ->where('ID_Utilisateur', Auth::id())
-            ->toSql());
+        // Vérifier s'il existe une soumission pour le premier devoir (non supprimée)
+        $existingSubmission = null;
+        if ($devoirs->isNotEmpty()) {
+            $devoirId = $devoirs->first()->ID_Devoir; // Utiliser ID_Devoir au lieu de id
+
+            // Récupérer la soumission non supprimée
+            $existingSubmission = RenduDevoir::where('ID_Devoir', $devoirId)
+                ->where('ID_Utilisateur', Auth::id())
+                ->first();
+        }
+
+        // Retourner la vue avec les données
+        return view('etudiant.coursDetails', compact('cours', 'ressources', 'devoirs', 'existingSubmission'));
     }
 
-    \Log::info('Existing Submission: ' . json_encode($existingSubmission));
-
-    return view('etudiant.coursDetails', compact('cours', 'ressources', 'devoirs', 'existingSubmission'));
-}
-
-public function deleteSubmission($id)
-{
-    $submission = RenduDevoir::findOrFail($id);
-
-    // Optional: Check if the authenticated user owns the submission
-    if ($submission->ID_Utilisateur !== Auth::id()) {
-        return redirect()->back()->with('error', 'You are not authorized to delete this submission.');
+    public function deleteSubmission($id)
+    {
+        // Récupérer la soumission à supprimer
+        $submission = RenduDevoir::findOrFail($id);
+    
+        // Vérifier que l'utilisateur authentifié est propriétaire de la soumission
+        if ($submission->ID_Utilisateur !== Auth::id()) {
+            return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à supprimer cette soumission.');
+        }
+    
+        // Supprimer le fichier associé s'il existe
+        if ($submission->Fichier_Rendu && Storage::disk('public')->exists('rendus_devoirs/' . $submission->Fichier_Rendu)) {
+            Storage::disk('public')->delete('rendus_devoirs/' . $submission->Fichier_Rendu);
+        }
+    
+        // Supprimer la soumission de la base de données
+        $submission->delete();
+    
+        return redirect()->back()->with('success', 'Soumission supprimée avec succès.');
     }
-
-    // Delete the file from storage if it exists
-    if (Storage::exists($submission->Fichier_Rendu)) {
-        Storage::delete($submission->Fichier_Rendu);
-    }
-
-    // Delete the submission from the database
-    $submission->delete();
-
-    return redirect()->back()->with('success', 'Submission deleted successfully.');
-}
 
 
     // ====================================================
@@ -98,32 +99,33 @@ public function deleteSubmission($id)
 
 public function submitRendreDevoir(Request $request, $id)
 {
-    // Validate input data
+    // Validation des données
     $request->validate([
-        'fichier' => 'required|file|mimes:pdf,doc,docx,zip|max:2048', // File size limit: 2MB
+        'fichier' => 'required|file|mimes:pdf,doc,docx,zip|max:2048', // Taille maximale : 2 Mo
         'commentaire' => 'nullable|string|max:500',
     ]);
 
-    // Retrieve the "Devoir" record
+    // Récupérer le devoir
     $devoir = Devoir::findOrFail($id);
 
-    // Save the uploaded file
-    $filePath = $request->file('fichier')->store('rendus_devoirs');
+    // Enregistrer le fichier dans storage/app/public/rendus_devoirs
+    $file = $request->file('fichier');
+    $fileName = $file->getClientOriginalName(); // Récupérer le nom original du fichier
+    $file->storeAs('rendus_devoirs', $fileName, 'public'); // Stocker dans public
 
-    // Create a new "Rendu Devoir" record
+    // Créer un nouveau rendu de devoir
     RenduDevoir::create([
         'ID_Devoir' => $devoir->ID_Devoir,
         'ID_Utilisateur' => Auth::id(),
-        'Fichier_Rendu' => $filePath,
+        'Fichier_Rendu' => $fileName, // Stocker uniquement le nom du fichier
         'Date_Rendu' => now(),
         'Commentaire' => $request->commentaire,
     ]);
 
-    // Redirect to course details page with success message
+    // Rediriger vers la page des détails du cours avec un message de succès
     return redirect()->route('etudiant.CoursDetails', $devoir->ID_Cours)
                      ->with('success', 'Devoir soumis avec succès.');
 }
-
 
     // ====================================================
     // Voir les Notes et Commentaires

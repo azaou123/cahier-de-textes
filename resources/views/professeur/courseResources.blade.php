@@ -32,7 +32,7 @@
                     <tr>
                         <td>{{ $resource->title }}</td>
                         <td>{{ $resource->description }}</td>
-                        <td><a href="{{ Storage::url($resource->file_path) }}" target="_blank">Télécharger</a></td>
+                        <td><a href="{{ asset('storage/course_resources/'.$resource->file_path) }}" target="_blank">Télécharger</a></td>
                         <td>
                           <!-- Bouton Modifier avec une icône -->
                           <a href="{{ route('professeur.courseResources.edit', $resource->id) }}" class="btn btn-warning btn-sm">

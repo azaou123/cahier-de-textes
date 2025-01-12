@@ -40,7 +40,7 @@
                                         <td>{{ $ressource->description }}</td>
                                         <td>{{ $ressource->created_at }}</td>
                                         <td>
-                                            <a href="{{ Storage::url($ressource->file_path) }}" target="_blank" class="btn btn-primary btn-sm">
+                                            <a href="{{ asset('storage/course_resources/' . $ressource->file_path) }}" target="_blank" class="btn btn-primary btn-sm">
                                                 <i class="fas fa-eye"></i> Consulter
                                             </a>
                                         </td>
@@ -56,6 +56,7 @@
                                 <tr>
                                     <th>Titre</th>
                                     <th>Description</th>
+                                    <th>Fiche</th>
                                     <th>Date Limite</th>
                                     <th>Actions</th>
                                 </tr>
@@ -65,6 +66,13 @@
                                     <tr>
                                         <td>{{ $devoir->Titre_Devoir }}</td>
                                         <td>{{ $devoir->Description_Devoir }}</td>
+                                        <td>
+                                            @if ($devoir->file_path)
+                                                <a href="{{ asset('storage/devoirs_files/' . $devoir->file_path) }}" target="_blank">Télécharger</a>
+                                            @else
+                                                Aucun fichier
+                                            @endif
+                                        </td>
                                         <td>{{ $devoir->Date_Limite }}</td>
                                         <td>
                                             <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#submitDevoirModal" data-devoir-id="{{ $devoir->ID_Devoir }}">
@@ -90,7 +98,7 @@
                         <div class="modal-body">
                             @if($existingSubmission)
                                 <!-- If a submission exists, show the "View" and "Delete" buttons -->
-                                <a href="{{ asset('storage/' . $existingSubmission->Fichier_Rendu) }}" target="_blank" class="btn btn-info">
+                                <a href="{{ asset('storage/rendus_devoirs/' . $existingSubmission->Fichier_Rendu) }}" target="_blank" class="btn btn-info">
                                     <i class="fas fa-eye"></i> View Submission
                                 </a>
                                 <form id="deleteSubmissionForm" action="{{ route('etudiant.devoirs.delete', $existingSubmission->ID_Rendu) }}" method="POST" class="d-inline">
